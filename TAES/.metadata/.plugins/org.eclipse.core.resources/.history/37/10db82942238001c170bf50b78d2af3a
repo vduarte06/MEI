@@ -1,0 +1,16 @@
+grammar org.example.domainmodel.Domainmodel with
+                                      org.eclipse.xtext.common.Terminals
+ 
+generate domainmodel "http://www.example.org/domainmodel/Domainmodel"
+ 
+ 
+Tabuleiro:
+    (elements+=Square)*;
+    
+terminal Square: ('A' ..'H')('1'..'8');
+
+Type:
+    DataType | Entity;
+ 
+DataType:
+    'datatype' name=ID;
