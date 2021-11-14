@@ -38,6 +38,5 @@ if __name__ == '__main__':
 
     plt.plot(x, y, 'bo')
     plt.plot(x, best_fit(x,y))
-    plt.plot(x, residuals(x,y))
-    print(cost_function(x,y))
+    #plt.plot(x, residuals(x,y))
     plt.show()

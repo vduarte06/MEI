@@ -1,9 +1,14 @@
 from cnf_model import CNF
 import sys, getopt
 from random import randint, shuffle
+import matplotlib.pyplot as plt
 
 
 def get_args():
+    def help():
+        print("maxsat.py -i <inputfilenumber>")
+        sys.exit(-1)
+
     argv = sys.argv[1:]
     args = {}
     try:
@@ -18,8 +23,9 @@ def get_args():
         elif opt in ("-a",):
             print(arg)
         else:
-            print("maxsat.py -i <inputfilenumber>")
-            sys.exit(-1)
+            help()
+    else:
+        help()
 
     return args
 
@@ -121,8 +127,7 @@ def variable_ngb_desc(cnf):
         result, new_candidate_solution = step(cnf, candidate_solution, True)
         if new_candidate_solution:
             candidate_solution = new_candidate_solution
-        else:
-            
+        
     return candidate_solution
 
 def steepest_asc_with_restart(cnf):
@@ -130,20 +135,28 @@ def steepest_asc_with_restart(cnf):
     candidate_solution = int_to_bin(
         randint(0, cnf.num_of_possible_solutions), cnf.num_of_vars
     )
+    rankings = []
     while result < cnf.num_of_clauses or (cnf.num_of_evaluations <= cnf.max_num_of_evaluations):
         result, candidate_solution = step(cnf, candidate_solution)
         if not candidate_solution:
             candidate_solution = int_to_bin(
                 randint(0, cnf.num_of_possible_solutions), cnf.num_of_vars
             )
-    return candidate_solution
+        rankings.append(result)
+    return rankings
 
 
 if __name__ == "__main__":
     args = get_args()
     cnf_instance = CNF(args["inputfilenumber"])
+    
     #solutions = systematic_search(cnf_instance)
     # s = steepest_asc(cnf_instance)
     # s = steepest_asc_with_restart(cnf_instance)
     s = next_asc(cnf_instance)
     #assert(h in solutions)
+
+    s = steepest_asc_with_restart(cnf_instance)
+    fig, ax = plt.subplots()
+    ax.plot(t, s)
+    plt.show()
