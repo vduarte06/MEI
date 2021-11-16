@@ -21,23 +21,22 @@ def plot_performance(performance):
 
 if __name__ == "__main__":
     #unittest.main()
-    NUMBER_OF_GENERATIONS = 2000
+    NUMBER_OF_GENERATIONS = 3000
     N = 100
-    n = 50
-    Pc = 0.9
+    n = 100
+    Pc = 0.6
     Pm = 1/10
     population = Population(N, n, Pc, Pm, onemax_fitness)
 
     #print(sorted(population.P, reverse=True))
     performance = []
     for i in range(NUMBER_OF_GENERATIONS):
-        
-        population.roulette_wheel_selection('sus')
+        population.roulette_wheel_selection()
         population.crossover() #crossover tem menos impacto?
-        #population.random_mutations()
-        population.steady_replacement()
-        
-        sorted(population.P, reverse=True)
+        population.random_mutations()
+        population.steady_replacement(generation_gap=0.2)
+        #sorted(population.P, reverse=True)
+        #print(population.P)
         max_fitness = population.P[0].fitness()
         performance.append(max_fitness)
         if max_fitness == n:

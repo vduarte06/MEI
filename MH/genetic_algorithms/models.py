@@ -39,7 +39,7 @@ class Population:
     S = []  # promissing solutions
     O = []  # offspring
     n_of_individuals = 0
-    lenght_of_each_individual = 0
+    individual_lenght = 0
     crossover_probability = 0
     mutation_probability = 0
 
@@ -50,7 +50,7 @@ class Population:
         E.g. N=10 binary strings of length n=8
         """
         self.n_of_individuals = N
-        self.lenght_of_each_individual = n
+        self.individual_lenght = n
         self.mutation_probability = Pm
         self.crossover_probability = Pc
         self.possibile_solutions = pow(2, n) - 1
@@ -75,7 +75,6 @@ class Population:
             roulette = self.generate_roulette_wheel()
         if not wheel_marks:
             wheel_marks = [random()]
-
         for mark in wheel_marks:
             for i in range(len(roulette)-1):
                 if (roulette[i] <= mark <= roulette[i+1]):
@@ -84,20 +83,21 @@ class Population:
 
         return selected_ids
     
-    def roulette_wheel_selection(self, type="sus"):
+    def roulette_wheel_selection(self, type="classic"):
         self.S = []
+        P = deepcopy(self.P)
         roulette = self.generate_roulette_wheel()
         # CLASSICAL RW: spins N times to select new population
         if type == 'classic':
             for i in range(self.n_of_individuals):
                 selected_ids = self.spin_roulette_wheel(roulette)
-                self.S.append(self.P[selected_ids[0]])
+                self.S.append(P[selected_ids[0]])
         elif type=='sus':
             # SUS: generate markers
             pointers = [i/self.n_of_individuals for i in range(self.n_of_individuals)]
             selected_ids = self.spin_roulette_wheel(roulette, pointers)
             for i in selected_ids:
-                self.S.append(self.P[selected_ids[0]])
+                self.S.append(P[selected_ids[i]])
         return self.S
 
     def tournament_selection_with_replacement(self):
@@ -113,28 +113,30 @@ class Population:
         return self.S
 
     # VARIATION
-    def one_point_crossover(self, c1, c2):
-        crossing_site = randint(0, self.lenght_of_each_individual - 1)
+    def one_point_crossover(self, c1, c2,  crossing_site=None):
+        while (crossing_site is None or crossing_site<=0 or crossing_site>=self.individual_lenght):
+            crossing_site = randint(1, self.individual_lenght - 2)
         result1 = c1[:crossing_site] + c2[crossing_site:]
         result2 = c2[:crossing_site] + c1[crossing_site:]
         return result1, result2
 
     def crossover(self):
-        p_len = len(self.S)
-        indices = range(p_len)
+        p_len = len(self.P)
+        indices = list(range(p_len))
 
-        for iteration in range(int((p_len * self.crossover_probability))):
-            i, j = sample(indices, 2)
-            self.S[i].chromosome, self.S[j].chromosome = self.one_point_crossover(
-                self.S[i].chromosome, self.S[j].chromosome
-            )
+        for _ in range(self.n_of_individuals):
+            if random() < self.crossover_probability:
+                i, j = sample(indices, 2)
+                self.S[i].chromosome, self.S[j].chromosome = self.one_point_crossover(
+                    self.S[i].chromosome, self.S[j].chromosome
+                )
 
     def mutate(self, individual):
-        """each bit is independently flipped with probability Pm"""
+        '''each bit is independently flipped with probability Pm'''
         for i in range(len(individual.chromosome)):
             if random() < self.mutation_probability:
                 individual.chromosome = flip_bit_at_index(individual.chromosome, i)
-
+      
         return individual
 
     def random_mutations(self, Pm=None):
@@ -152,13 +154,25 @@ class Population:
 
     # REPLACEMENT
     def full_replacement(self):
-        self.P = self.S
+        self.P = deepcopy(self.S)
     
-    def steady_replacement(self):
+    def steady_replacement2(self):
         for i , _i in enumerate(self.S):
             for j, _j in enumerate(self.P):
                 if _i.fitness() >= _j.fitness():
                     self.P[j] = self.S[i]
                     break
+
+    def steady_replacement(self, generation_gap=0.5):
+        '''Some of the old solutions become part of the new population.
+        whe are replacing the worst of the new solution with the best of the old solution
+        the generation gap can be adjusted (percentange of replaced individuals) 
+        '''
+        generation_gap = int(generation_gap*self.n_of_individuals)
+        best_p = sorted(self.P, reverse=True)[:generation_gap]
+        O = best_p + sorted(self.S)[generation_gap:]
+        self.P = deepcopy(O)
+
+        
         #print('p', self.P)
 
