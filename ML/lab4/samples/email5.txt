@@ -1,0 +1,26 @@
+GitHub recently announced its new GitHub copilot tool and the internet was loaded with memes. 
+There were speculations/talks that this would change the entire software development industry 
+and everyone would be able to code out their products. GitHub copilot also faced backslashes 
+when it was discovered that it had some security and privacy concerns including exposing API keys, 
+reading private repositories code, etc.
+GitHub market copilot as an "AI pair programmer" that could increase a developer’s coding efficiency. 
+One would be able to get code suggestions on the go. It supports multiple programming languages 
+and does very well with Python, JavaScript, TypeScript, Ruby, Java, and Go. According to GitHub, 
+the copilot is designed to understand more context than the usual code assistants.
+The core of the copilot is created by OpenAI which had earlier released GPT-3, the world’s biggest 
+NLP model (at the time of writing this article). The copilot is a subproduct of GPT-3, trained 
+specifically on publically available code. The parent GPT-3 can also provide fairly good code results.
+GPT-3 predicts the next word of a sentence given the previous words in a sentence. It completes
+ the given prompt to the number of tokens specified. The copilot is based on suggesting what 
+ could be the next piece of code based on the current variables used/declared.
+The comparison between the two may seem a bit unfair, but, it will be interesting to 
+see how these two models perform. I am more proficient with Python, and therefore, all 
+the code snippets would be created in Python language.
+Round 1: Write a program to perform a binary search
+Let’s with a basic concept whose code should be available in abundance over the internet, 
+Binary Search. Let’s start with GitHub copilot.
+The copilot has an interactive and easy way to follow long writing code. 
+Supported in VS code IDE, one needs to install the copilot VS code extension 
+and then authenticate to a GitHub account that has technical preview access.
+ I have got the early access and therefore, can proceed with getting code suggestions in my VS code IDE.
+Here is the result from copilot for binary search

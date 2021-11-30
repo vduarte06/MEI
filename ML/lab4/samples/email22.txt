@@ -1,0 +1,7 @@
+Turn $600 into $50,000 with Python
+How I leveraged Python to turn $600 to $50000.
+Yancy Dennis
+Yancy Dennis
+Follow
+
+I came across this approach by accident. I was trying to fulfill a request by a customer who wanted a lot of email addresses for professionals — millions which I did not have. So, I did not want to lose out on the change to make a buck. He was going to pay $6000 for about 3,000,000 emails. So I frantically searched the web to find a list that I could be and extract the information that he needed. I finally found it and after writing code for about 10 minutes, maybe less, I pulled his data and…

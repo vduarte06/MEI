@@ -1,0 +1,5 @@
+Hello,
+
+Your bank account is frozen. Please click here to remove it
+
+Best regards

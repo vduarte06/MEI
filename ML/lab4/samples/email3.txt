@@ -1,0 +1,12 @@
+Dear Mr Pascal, 
+
+We regret to inform you that we will not be able to respect the deadline previously 
+agreed for the delivery of your order. Our supplier has warned us today that they are
+experiencing supply problems, which will result in a delay in our production chain. 
+We count on your understanding and thank you for your patience. 
+
+Please accept our apologies.
+
+Best regards,
+
+.
