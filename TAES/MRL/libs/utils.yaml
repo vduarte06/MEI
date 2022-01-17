@@ -1,0 +1,19 @@
+
+# FILE: utils.mrl 
+# in this modules decribes the diagnosis
+# E.g. In the conclusion the doctor can Write Diagnosis.SAOS.mild
+# When compiling the report the str will be the output.
+# Notice that it can also check if the diagnosis makes sense given the data (IAH value)
+Diagnosis:
+    SAOS:
+        mild: 
+          condition: 5 < IAH < 15; # the diagnosis condition could be an expression, if it is simple
+          str: 'Incidência ligeiramente aumentada de eventos obstrutivos, 
+              sendo o IAH de {IAH}/hora. Índice de desaturação {IDO}/h.'
+        moderate: 
+          condition: isMildSAOS(IAH); # or could be the result of a bolean function
+          str: "Incidência aumentada de eventos respiratórios obstrutivos, 
+                sendo o IAH de {IAH}/hora. 
+                Desaturações sobretudo relacionadas com apneias/hipopneias ({IDO}/h)."
+
+

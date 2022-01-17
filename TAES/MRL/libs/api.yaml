@@ -1,0 +1,16 @@
+
+
+
+# FILE: api.mrl
+# MRL doenst support general purpose programming
+# but allows the user to import functions implemented in other languages
+# This example ilustrates an itegration with Pytho
+# Python was chosen because it has great libraries for signal processing, but it could itegrate other languages too.
+
+from python.api import call;
+import numpy; 
+import custom; # user defined module. Could be any name
+
+function correlate(arg1*) -> call numpy.correlate args*; # this maps a mrl function to a numpy function
+function age(date) -> call custom.age date; # this maps a mrl function to a function in the module custom.py
+

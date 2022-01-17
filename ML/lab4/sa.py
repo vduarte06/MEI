@@ -29,6 +29,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import naive_bayes
 from sklearn import svm
 from sklearn.model_selection import cross_validate
+from sklearn.metrics import confusion_matrix
+
 
 def get_args():
     def help():
@@ -160,7 +162,7 @@ def test_classifier(model):
     #print('Test Accuracy: %f\n', (mean(float(p == ytest)) * 100))
     accuracy = np.mean(p_test == ytest)*100
     print('Test Accuracy: ', np.mean(p_test == ytest)*100)
-
+    print('confusion matrix: ', confusion_matrix(ytest, p_test))
     return accuracy
 
 ## ================= Part 5: Top Predictors of Spam ====================
@@ -215,18 +217,19 @@ def get_external_data_X_and_y(model):
     for filename in filenames:
         x, known_y = extract_features(filename)
         p = model.predict([x])
-        print(filename, known_y, p)
+        #print(filename, known_y, p)
         X = np.vstack((X, x)) if X.size else x
         y = np.append(y, int(known_y))
     return X, y
 
 def test_with_external_data(model):
     X, y = get_external_data_X_and_y(model)
+    print(X.shape)
     p = model.predict(X)
-    print(p)
     accuracy = np.mean(p==y)  
     print('Test accuracy for external data: {}'.format(accuracy))  
-    print(cross_validate(model, X, y, cv=4))
+    print('confusion matrix: ', confusion_matrix(y, p))
+    #print(cross_validate(model, X, y, cv=4))
 
 
 ##--------------------- MAIN ---------------------
@@ -251,6 +254,7 @@ def estimate_C(classifier_code, X, y):
             cv_results = cross_validate(classifier, X, y, cv=10)
             model, training_accuracy = get_model(classifier_code, X, y,c)
             test_accuracy = test_classifier(model)
+            print('results', [c, training_accuracy/100, test_accuracy/100, np.mean(cv_results['test_score'])])
             w.writerow([c, training_accuracy/100, test_accuracy/100, np.mean(cv_results['test_score'])])    
 
 
@@ -269,9 +273,8 @@ if __name__ == "__main__":
 
     test_preprocessing()
     test_extract_features()
-    estimate_C(classifier_code, X, y)
+    #estimate_C(classifier_code, X, y)
     model, _ = get_model(classifier_code, X, y, C)
     test_classifier(model)
     #top_predictors_of_spam(model)
     test_with_external_data(model)
-

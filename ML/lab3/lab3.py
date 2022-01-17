@@ -21,6 +21,9 @@ def load_data(file = "ex1data.txt"):
 def h (matrix_x, teta):
     return np.dot(matrix_x, teta)
 
+def h(x, teta):
+    x = np.dot(x, teta.T)
+    return 1 / (1 + np.exp(-x))
 
 # Returns residual matrix 
 def calculate_residual(matrix_x, matrix_teta, matrix_y):
@@ -86,14 +89,27 @@ def compute_j_regularization(m, matrix_x, matrix_teta, matrix_y, r_factor):
 # @pre y_vector (size n*1)
 # @r_factor - regularization factor
 # @return matrix_h (size m*1)
-def gradient_step_regularization(m ,teta_vector, matrix_x, y_vector ,learning_rate, r_factor):
+def gradient_step_regularizatio(m ,teta_vector, matrix_x, y_vector ,learning_rate, r_factor):
     matrix_h = h(matrix_x, teta_vector)
     next_teta0 = teta_vector[0] - learning_rate*(1/m)*(np.dot((matrix_h - y_vector).transpose(), matrix_x[:,0]))
     next_teta_vector = teta_vector[1:]*(1-(learning_rate*r_factor)/m) - learning_rate*(1/m)*(np.dot((matrix_h - y_vector).transpose(), matrix_x[:,1:])) #incluir todas as restantes colunas
     next_teta = np.append(next_teta0, next_teta_vector)
     return next_teta
 
-   
+def gradient_step_regularization(m ,teta_vector, matrix_x, y_vector ,learning_rate, r_factor):
+    matrix_h = h(matrix_x, teta_vector)
+    next_teta0 = teta_vector[0] - learning_rate*(1/m)*(np.dot((matrix_h - y_vector).transpose(), matrix_x[:,0]))
+    next_teta_vector = teta_vector[1:]*(1-(learning_rate*r_factor)/m) - learning_rate*(1/m)*(np.dot((matrix_h - y_vector).transpose(), matrix_x[:,1:])) #incluir todas as restantes colunas
+    next_teta = np.append(next_teta0, next_teta_vector)
+    return next_teta 
+
+def cost_function(m, theta, x, y, r):
+    # Computes the cost function for all the training samples
+    total_cost = -(1 / m) * np.sum(
+        y * np.log(h(x, theta)) + (1 - y) * np.log(
+            1 - h(x, theta)))
+    return total_cost
+
 
 # teta0 (s+1) = teta0(s) - a*1/m*(X*TETA - Y)T*X
 # TETA (s+1) = T
@@ -102,16 +118,17 @@ def gradient_descent_regularization(teta_vector, m, matrix_x, y_vector, learning
     cost.append(compute_j_regularization(m, matrix_x, teta_vector, y_vector, r_factor))
     next_teta_vector = gradient_step_regularization(m, teta_vector, matrix_x, y_vector, learning_rate, r_factor)
     teta_vector = next_teta_vector
-    cost.append(compute_j_regularization(m, matrix_x, teta_vector, y_vector, r_factor))
+    #cost.append(compute_j_regularization(m, matrix_x, teta_vector, y_vector, r_factor))
+    cost.append(cost_function(m, teta_vector, matrix_x, y_vector, r_factor))
     error = abs(cost[-1] - cost[-2]) 
+    print(cost_function(m, teta_vector, matrix_x, y_vector, r_factor))
     # print('cost', error)
     while error > alpha:
         next_teta_vector = gradient_step_regularization(m, teta_vector, matrix_x, y_vector, learning_rate, r_factor)
         teta_vector = next_teta_vector
-        cost.append(compute_j_regularization(m, matrix_x, teta_vector, y_vector, r_factor))
+        cost.append(cost_function(m, teta_vector, matrix_x, y_vector, r_factor))
         error = abs(cost[-1] - cost[-2]) 
     return teta_vector, cost
-
 
 # /////////////////////////////////////////////////////////////////////////////
 # /// Exercicio 2 ///
@@ -158,7 +175,7 @@ def main():
     teta_gradient, cost = gradient_descent(teta_vector, m, matrix_x_train, matrix_y_train, learning_rate)
     print('Gradiente: Teta0 = {:.4f}, Teta1 = {:.4f}'.format(teta_gradient[0], teta_gradient[1]))
     
-    reg_term_max = 8
+    reg_term_max = 1000
     rmse_train = regularization_term_variation(m, matrix_x_train, matrix_y_train, teta_vector, learning_rate, reg_term_max)
     
     # for test data
@@ -178,7 +195,7 @@ def main():
     plt.plot(x, y, 'x', color='grey')
     plt.plot(x, teta_gradient[1]*x + teta_gradient[0] , color='black')
     plt.plot(x, teta_gradient_reg[1]*x + teta_gradient_reg[0] , color='red')
-    plt.figure(1)
+    #plt.figure(1)
     #plt.plot(range(reg_term_max), rmse_train, color = 'blue')
     #plt.plot(range(reg_term_max), rmse_test, color = 'red')
 
