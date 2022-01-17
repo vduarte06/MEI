@@ -23,7 +23,7 @@ Results:
     SleepArchitecture: SleepTime, Arousals, SleepPhases;
     MovementDisorders: 
         LegMovements, 
-        'Legs vs Arousals' : correlate(LegMovement, Arousals) as ; 
+        'Legs vs Arousals' : correlate(LegMovement, Arousals); 
 
 Conclusions:
     Diagnosis: Diagnosis.SAOS.severe;
